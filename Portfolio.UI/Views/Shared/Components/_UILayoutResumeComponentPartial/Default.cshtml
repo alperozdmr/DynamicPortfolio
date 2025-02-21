@@ -1,0 +1,49 @@
+﻿@model Portfolio.UI.Dtos.Resume
+
+<section id="resume" class="resume section">
+
+    <!-- Section Title -->
+    <div class="container section-title" data-aos="fade-up">
+        <h2>Resume</h2>
+        <a href="~/CV/AlperÖZDEMİR.pdf" target="_blank" class="btn btn-primary">View CV </a>
+    </div><!-- End Section Title -->
+
+    <div class="container">
+
+        <div class="row">
+
+            <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
+             
+                <h3 class="resume-title">Education</h3>
+                @foreach (var item in Model.Educations)
+                {
+                    <div class="resume-item">
+                        <h4>@item.Degree</h4>
+                        <h5>@item.Year</h5>
+                        <p><em>@item.Degree</em></p>
+                        <p>@item.Description</p>
+                    </div><!-- Edn Resume Item -->
+                }
+            </div>
+
+            <div class="col-lg-6" data-aos="fade-up" data-aos-delay="200">
+                <h3 class="resume-title">Experience</h3>
+                @foreach (var item in Model.Experiences)
+                {
+                    <div class="resume-item">
+                        <h4>@item.Title</h4>
+                        <h5>@item.Duration</h5>
+                        <p><em>@item.Company </em></p>
+                        <ul>
+                            <li>@item.Responsibilities</li>
+                        </ul>
+                    </div><!-- Edn Resume Item -->
+                }
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>

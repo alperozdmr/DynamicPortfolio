@@ -30,6 +30,12 @@ builder.Services.AddScoped<IProjectDal, EfProjectDal>();
 builder.Services.AddScoped<IContactService, ContactManager>();
 builder.Services.AddScoped<IContactDal, EfContactDal>();
 
+builder.Services.AddScoped<IEducationService, EducationManager>();
+builder.Services.AddScoped<IEducationDal, EfEducationDal>();
+
+builder.Services.AddScoped<IExperienceService, ExperienceManager>();
+builder.Services.AddScoped<IExperienceDal, EfExperienceDal>();
+
 // Add services to the container.
 builder.Services.AddControllersWithViews()
     .AddJsonOptions(options => options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);

@@ -31,21 +31,21 @@ namespace Portfolio.API.Controllers
         {
             var value = _mapper.Map<Project>(var);
             _projectService.TAdd(value);
-            return Ok("Hakkında kısmı başarılı bir şekilde eklendi");
+            return Ok("Proje kısmı başarılı bir şekilde eklendi");
         }
         [HttpDelete("{id}")]
         public IActionResult DeleteProject(int id)
         {
             var value = _projectService.TGetByID(id);
             _projectService.TDelete(value);
-            return Ok("Hakkında alanı silindi");
+            return Ok("Proje alanı silindi");
         }
         [HttpPut]
         public IActionResult UpdateProject(ProjectDto var)
         {
             var value = _mapper.Map<Project>(var);
             _projectService.TUpdate(value);
-            return Ok("Hakkında alanı güncellendi");
+            return Ok("Proje alanı güncellendi");
         }
         [HttpGet("{id}")]
         public IActionResult GetProject(int id)
