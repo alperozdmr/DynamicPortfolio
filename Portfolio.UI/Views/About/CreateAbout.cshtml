@@ -1,0 +1,89 @@
+﻿@model Portfolio.UI.Dtos.AboutDto
+@{
+    ViewData["Title"] = "CreateAbout";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+<div class="content">
+	<div class="container-fluid">
+		<h4 class="page-title">Anasayfa Hakkımızda işlemleri</h4>
+		<div class="row">
+			<div class="col-md-12">
+				<form method="post">
+					<div class="card">
+						<div class="card-header">
+							<div class="card-title">Yeni Hakkımızda Girişi</div>
+						</div>
+						<div class="card-body">
+							<div class="form-group">
+								<label for="title">Başlığı Adını Giriniz</label>
+								<input type="text" class="form-control" asp-for="Title" id="title">
+							</div>
+
+						</div>
+						<div class="card-body">
+							<div class="form-group">
+								<label for="ımageurl">Görselin URL ini Giriniz</label>
+								<input type="text" class="form-control" asp-for="Image" id="ımageurl">
+							</div>
+
+						</div>
+						<div class="card-body">
+							<div class="form-group">
+								<label for="description"> Açıklama Giriniz</label>
+								<textarea rows="5" class="form-control" asp-for="Description" id="description"></textarea>
+							</div>
+
+						</div>
+						<div class="card-body">
+							<div class="form-group">
+								<label for="Age">Yaş Giriniz</label>
+								<input type="number" class="form-control" asp-for="Age" id="Age">
+							</div>
+
+						</div>
+						<div class="card-body">
+							<div class="form-group">
+								<label for="City">Şehir Giriniz</label>
+								<input type="text" class="form-control" asp-for="City" id="City">
+							</div>
+
+						</div>
+						<div class="card-body">
+							<div class="form-group">
+								<label for="Degree">Derece Giriniz</label>
+								<input type="text" class="form-control" asp-for="Degree" id="Degree">
+							</div>
+
+						</div>
+						<div class="card-body">
+							<div class="form-group">
+								<label for="Phone">Telefon Giriniz</label>
+								<input type="text" class="form-control" asp-for="Phone" id="Phone">
+							</div>
+
+						</div>
+						<div class="card-body">
+							<div class="form-group">
+								<label for="Website">Website Giriniz</label>
+								<input type="text" class="form-control" asp-for="Website" id="Website">
+							</div>
+
+						</div>
+						<div class="card-body">
+							<div class="form-group">
+								<label for="Email">Email Giriniz</label>
+								<input type="email" class="form-control" asp-for="Email" id="Email">
+							</div>
+
+						</div>
+						<div class="card-action">
+							<button class="btn btn-primary">Hakkımızda ekle</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
