@@ -7,13 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+	  <PackageReference Include="AutoMapper" Version="12.0.1" />
+	  <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.18" />
     <PackageReference Include="NETCore.MailKit" Version="2.1.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Portfolio.DataAccess\Portfolio.DataAccess.csproj" />
-    <ProjectReference Include="..\Portfolio.Entity\Portfolio.Entity.csproj" />
+    <ProjectReference Include="..\Portfolio.Helper\Portfolio.Helper.csproj" />
+    <ProjectReference Include="..\Portfolio.Service\Portfolio.Service.csproj" />
   </ItemGroup>
 
 </Project>

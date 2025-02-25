@@ -1,4 +1,4 @@
-﻿@model List<Portfolio.UI.Dtos.ProjectDto>
+﻿@model List<Portfolio.Helper.Dtos.ProjectDto>
 @{
 	ViewData["Title"] = "Index";
 	Layout = "~/Views/AdminLayout/Index.cshtml";
@@ -40,6 +40,7 @@
 										<td><img src="@item.Image" width="100" height="100" /></td>
 										<td><a href="/Project/DeleteProject/@item.ID" class="btn btn-outline-danger">Sil</a></td>
 										<td><a href="/Project/UpdateProject/@item.ID" class="btn btn-outline-success">Güncelle</a></td>
+										<td><a href="/ProjectDetail/CreateProjectDetail/@item.ID" class="btn btn-outline-dark">Detay Ekle</a></td>
 									</tr>
 								}
 

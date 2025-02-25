@@ -1,30 +1,30 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using Portfolio.UI.Dtos;
+using Portfolio.Entity.concrete;
+using Portfolio.Service.Abstract;
+using Portfolio.Helper.Dtos;
 using System.Text;
 
 namespace Portfolio.UI.Controllers
 {
     public class AboutController : Controller
     {
-        private readonly IHttpClientFactory _httpClientFactory;
+		private readonly IAboutService _aboutService;
+		private readonly IMapper _mapper;
+        private readonly ILogger<AboutController> _logger;
 
-        public AboutController(IHttpClientFactory httpClientFactory)
-        {
-            _httpClientFactory = httpClientFactory;
-        }
+		public AboutController(IAboutService aboutService, IMapper mapper, ILogger<AboutController> logger)
+		{
+			_aboutService = aboutService;
+			_mapper = mapper;
+			_logger = logger;
+		}
 
-        public async Task<IActionResult> Index()
+		public async Task<IActionResult> Index()
         {
-            var client = _httpClientFactory.CreateClient();
-            var responseMessage = await client.GetAsync("https://localhost:7059/api/About");
-            if (responseMessage.IsSuccessStatusCode)
-            {
-                var jsonData = await responseMessage.Content.ReadAsStringAsync();
-                var values = JsonConvert.DeserializeObject<List<AboutDto>>(jsonData);
-                return View(values);
-            }
-            return View();
+			var values = _aboutService.TGetListAll();
+            return View(_mapper.Map<List<AboutDto>>(values));
         }
         [HttpGet]
         public IActionResult CreateAbout()
@@ -34,53 +34,61 @@ namespace Portfolio.UI.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateAbout(AboutDto var)
         {
-            var client = _httpClientFactory.CreateClient();
-            var jsonData = JsonConvert.SerializeObject(var);
-            StringContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            var responseMessage = await client.PostAsync("https://localhost:7059/api/About", content);
-            if (responseMessage.IsSuccessStatusCode)
-            {
+            try {
+				var value = _mapper.Map<About>(var);
+				_aboutService.TAdd(value);
                 return RedirectToAction("Index");
+			}
+            catch(Exception ex) {
+                _logger.LogError(ex.Message);
+                return View();
             }
-            return View();
 
         }
         public async Task<IActionResult> DeleteAbout(int id)
         {
-            var client = _httpClientFactory.CreateClient();
-            var responseMessage = await client.DeleteAsync($"https://localhost:7059/api/About/{id}");
-            if (responseMessage.IsSuccessStatusCode)
-            {
-                return RedirectToAction("Index");
-            }
-            return View();
-        }
-        [HttpGet]
+			try
+			{
+				var value = _aboutService.TGetByID(id);
+				_aboutService.TDelete(value);
+				return RedirectToAction("Index");
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex.Message);
+				return View();
+			}
+
+		}
+		[HttpGet]
         public async Task<IActionResult> UpdateAbout(int id)
         {
-            var client = _httpClientFactory.CreateClient();
-            var responseMessage = await client.GetAsync($"https://localhost:7059/api/About/{id}");
-            if (responseMessage.IsSuccessStatusCode)
-            {
-                var jsonData = await responseMessage.Content.ReadAsStringAsync();
-                var values = JsonConvert.DeserializeObject<AboutDto>(jsonData);
-                return View(values);
-            }
-            return View();
-        }
+			try
+			{
+				var value = _aboutService.TGetByID(id);
+				return View(_mapper.Map<AboutDto>(value));
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex.Message);
+				return View();
+			}
+		}
         [HttpPost]
         public async Task<IActionResult> UpdateAbout(AboutDto var)
         {
-            var client = _httpClientFactory.CreateClient();
-            var jsonData = JsonConvert.SerializeObject(var);
-            StringContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            var responseMessage = await client.PutAsync("https://localhost:7059/api/About/", content); ;
-            if (responseMessage.IsSuccessStatusCode)
-            {
-                return RedirectToAction("Index");
-            }
-            return View();
+			try
+			{
+				var value = _mapper.Map<About>(var);
+				_aboutService.TUpdate(value);
+				return RedirectToAction("Index");
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex.Message);
+				return View();
+			}
 
-        }
+		}
     }
 }

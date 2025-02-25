@@ -2,12 +2,13 @@
 using Portfolio.Entity.concrete;
 using Portfolio.Helper.Dtos;
 
+
 namespace Portfolio.API.Mapping
 {
-	public class ProjectMapping : Profile
+    public class AboutMapping : Profile
     {
-        public ProjectMapping() {
-            CreateMap<Project, ProjectDto>().ReverseMap();
+        public AboutMapping() {
+            CreateMap<About, AboutDto>().ReverseMap();
         }
     }
 }

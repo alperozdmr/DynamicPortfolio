@@ -19,6 +19,8 @@ namespace Portfolio.DataAccess.Context
         public DbSet<Contact> Contacts{ get; set; }
         public DbSet<Education> Educations{ get; set; }
         public DbSet<Experience> Experiences{ get; set; }
+        public DbSet<ProjectDetail> ProjectDetails{ get; set; }
+        public DbSet<ImageList> ImageLists{ get; set; }
 
     }
 }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Portfolio.Entity.concrete
+namespace Portfolio.Helper.Dtos
 {
     public class ContactDto
     {

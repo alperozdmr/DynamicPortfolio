@@ -1,29 +1,35 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using Portfolio.UI.Dtos;
+using Portfolio.Service.Abstract;
+using Portfolio.UI.CustomeModel;
 
 namespace Portfolio.UI.ViewComponents.UILayoutComponents
 {
     public class _UILayoutResumeComponentPartial : ViewComponent
     {
-        private readonly IHttpClientFactory _httpClientFactory;
+		private readonly IEducationService _educationService;
+		private readonly IExperienceService _experienceService;
+		private readonly ILogger<_UILayoutResumeComponentPartial> _logger;
 
-        public _UILayoutResumeComponentPartial(IHttpClientFactory httpClientFactory)
-        {
-            _httpClientFactory = httpClientFactory;
-        }
+		public _UILayoutResumeComponentPartial(IEducationService educationService, IExperienceService experienceService, ILogger<_UILayoutResumeComponentPartial> logger)
+		{
+			_educationService = educationService;
+			_experienceService = experienceService;
+			_logger = logger;
+		}
 
-        public async Task<IViewComponentResult> InvokeAsync()
+
+		public async Task<IViewComponentResult> InvokeAsync()
         {
-            var client = _httpClientFactory.CreateClient();
-            var responseMessage = await client.GetAsync("https://localhost:7059/api/Resume/GetResume");
-            if (responseMessage.IsSuccessStatusCode)
-            {
-                var jsonData = await responseMessage.Content.ReadAsStringAsync();
-                var values = JsonConvert.DeserializeObject<Resume>(jsonData);
-                return View(values);
-            }
-            return View();
-        }
+			var educations = _educationService.TGetListAll();
+			var experiences = _experienceService.TGetListAll();
+
+			var Resume = new Resume
+			{
+				Educations = educations,
+				Experiences = experiences,
+			};
+			return View(Resume);
+		}
     }
 }

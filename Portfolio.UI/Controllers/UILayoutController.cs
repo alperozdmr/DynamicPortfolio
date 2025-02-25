@@ -1,32 +1,38 @@
-﻿using MailKit.Net.Smtp;
+﻿using AutoMapper;
+using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Mvc;
 using MimeKit;
 using Newtonsoft.Json;
-using Portfolio.UI.Dtos;
+using Portfolio.Entity.concrete;
+using Portfolio.Service.Abstract;
+using Portfolio.Helper.Dtos;
 using System.Text;
 
 namespace Portfolio.UI.Controllers
 {
     public class UILayoutController : Controller
     {
-        private readonly IHttpClientFactory _httpClientFactory;
+		private readonly IContactService _contactService;
+		private readonly IMapper _mapper;
+		private readonly ILogger<UILayoutController> _logger;
 
-        public UILayoutController(IHttpClientFactory httpClientFactory)
-        {
-            _httpClientFactory = httpClientFactory;
-        }
-        public IActionResult Index()
+		public UILayoutController(IContactService ContactService, IMapper mapper, ILogger<UILayoutController> logger)
+		{
+			_contactService = ContactService;
+			_mapper = mapper;
+			_logger = logger;
+		}
+		public IActionResult Index()
         {
             return View();
         }
         [HttpPost]
         public async Task<IActionResult> Message(ContactDto var) {
-            var client = _httpClientFactory.CreateClient();
-            var jsonData = JsonConvert.SerializeObject(var);
-            StringContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            var responseMessage = await client.PostAsync("https://localhost:7059/api/Contact", content);
-            if (responseMessage.IsSuccessStatusCode)
+            try
             {
+                var value = _mapper.Map<Contact>(var);
+                _contactService.TAdd(value);
+
                 MimeMessage mimeMessage = new MimeMessage();
 
                 MailboxAddress mailboxAddressFrom = new MailboxAddress("Alper Özdemir", "alozdemir23@gmail.com");
@@ -49,7 +55,11 @@ namespace Portfolio.UI.Controllers
                 clientM.Disconnect(true);
                 return RedirectToAction("Index");
             }
-            return View();
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return View();
+            }
         }
     }
 }

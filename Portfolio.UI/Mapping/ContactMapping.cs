@@ -4,10 +4,10 @@ using Portfolio.Helper.Dtos;
 
 namespace Portfolio.API.Mapping
 {
-	public class ProjectMapping : Profile
+    public class ContactMapping : Profile
     {
-        public ProjectMapping() {
-            CreateMap<Project, ProjectDto>().ReverseMap();
+        public ContactMapping() {
+            CreateMap<Contact, ContactDto>().ReverseMap();
         }
     }
 }

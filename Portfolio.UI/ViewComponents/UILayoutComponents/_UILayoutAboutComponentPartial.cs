@@ -1,29 +1,30 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Portfolio.UI.Dtos;
+using Portfolio.Service.Abstract;
+using Portfolio.Helper.Dtos;
 
 namespace Portfolio.UI.ViewComponents.UILayoutComponents
 {
     public class _UILayoutAboutComponentPartial : ViewComponent
     {
-        private readonly IHttpClientFactory _httpClientFactory;
+		private readonly IAboutService _aboutService;
+		private readonly IMapper _mapper;
+		private readonly ILogger<_UILayoutAboutComponentPartial> _logger;
 
-        public _UILayoutAboutComponentPartial(IHttpClientFactory httpClientFactory)
-        {
-            _httpClientFactory = httpClientFactory;
-        }
+		public _UILayoutAboutComponentPartial(IAboutService aboutService, IMapper mapper, ILogger<_UILayoutAboutComponentPartial> logger)
+		{
+			_aboutService = aboutService;
+			_mapper = mapper;
+			_logger = logger;
+		}
 
-        public async Task<IViewComponentResult> InvokeAsync()
+		public async Task<IViewComponentResult> InvokeAsync()
         {
-            var client = _httpClientFactory.CreateClient();
-            var responseMessage = await client.GetAsync("https://localhost:7059/api/About");
-            if (responseMessage.IsSuccessStatusCode)
-            {
-                var jsonData = await responseMessage.Content.ReadAsStringAsync();
-                var values = JsonConvert.DeserializeObject<List<AboutDto>>(jsonData);
-                return View(values);
-            }
-            return View();
-        }
+
+			var values = _aboutService.TGetListAll();
+			return View(_mapper.Map<List<AboutDto>>(values));
+		}
     }
 }

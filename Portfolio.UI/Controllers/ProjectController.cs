@@ -1,30 +1,29 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using Portfolio.UI.Dtos;
+using Portfolio.Service.Abstract;
+using Portfolio.Helper.Dtos;
 using System.Text;
+using Portfolio.Entity.concrete;
 
 namespace Portfolio.UI.Controllers
 {
 	public class ProjectController : Controller
 	{
-		private readonly IHttpClientFactory _httpClientFactory;
+		private readonly IProjectService _projectService;
+		private readonly IMapper _mapper;
+		private readonly ILogger<ProjectController> _logger;
 
-		public ProjectController(IHttpClientFactory httpClientFactory)
+		public ProjectController(IProjectService projectService, IMapper mapper, ILogger<ProjectController> logger)
 		{
-			_httpClientFactory = httpClientFactory;
+			_projectService = projectService;
+			_mapper = mapper;
+			_logger = logger;
 		}
-
 		public async Task<IActionResult> Index()
 		{
-			var client = _httpClientFactory.CreateClient();
-			var responseMessage = await client.GetAsync("https://localhost:7059/api/Project");
-			if (responseMessage.IsSuccessStatusCode)
-			{
-				var jsonData = await responseMessage.Content.ReadAsStringAsync();
-				var values = JsonConvert.DeserializeObject<List<ProjectDto>>(jsonData);
-				return View(values);
-			}
-			return View();
+			var values = _projectService.TGetListAll();
+			return View(_mapper.Map<List<ProjectDto>>(values));
 		}
 		[HttpGet]
 		public IActionResult CreateProject()
@@ -34,52 +33,61 @@ namespace Portfolio.UI.Controllers
 		[HttpPost]
 		public async Task<IActionResult> CreateProject(ProjectDto var)
 		{
-			var client = _httpClientFactory.CreateClient();
-			var jsonData = JsonConvert.SerializeObject(var);
-			StringContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-			var responseMessage = await client.PostAsync("https://localhost:7059/api/Project", content);
-			if (responseMessage.IsSuccessStatusCode)
+			try
 			{
+				var value = _mapper.Map<Project>(var);
+				_projectService.TAdd(value);
 				return RedirectToAction("Index");
 			}
-			return View();
+			catch (Exception ex)
+			{
+				_logger.LogError(ex.Message);
+				return View();
+			}
 
 		}
 		public async Task<IActionResult> DeleteProject(int id)
 		{
-			var client = _httpClientFactory.CreateClient();
-			var responseMessage = await client.DeleteAsync($"https://localhost:7059/api/Project/{id}");
-			if (responseMessage.IsSuccessStatusCode)
+			try
 			{
+				var value = _projectService.TGetByID(id);
+				_projectService.TDelete(value);
 				return RedirectToAction("Index");
 			}
-			return View();
+			catch (Exception ex)
+			{
+				_logger.LogError(ex.Message);
+				return View();
+			}
 		}
 		[HttpGet]
 		public async Task<IActionResult> UpdateProject(int id)
 		{
-			var client = _httpClientFactory.CreateClient();
-			var responseMessage = await client.GetAsync($"https://localhost:7059/api/Project/{id}");
-			if (responseMessage.IsSuccessStatusCode)
+			try
 			{
-				var jsonData = await responseMessage.Content.ReadAsStringAsync();
-				var values = JsonConvert.DeserializeObject<ProjectDto>(jsonData);
-				return View(values);
+				var value = _projectService.TGetByID(id);
+				return View(_mapper.Map<ProjectDto>(value));
 			}
-			return View();
+			catch (Exception ex)
+			{
+				_logger.LogError(ex.Message);
+				return View();
+			}
 		}
 		[HttpPost]
 		public async Task<IActionResult> UpdateProject(ProjectDto var)
 		{
-			var client = _httpClientFactory.CreateClient();
-			var jsonData = JsonConvert.SerializeObject(var);
-			StringContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-			var responseMessage = await client.PutAsync("https://localhost:7059/api/Project/", content); ;
-			if (responseMessage.IsSuccessStatusCode)
+			try
 			{
+				var value = _mapper.Map<Project>(var);
+				_projectService.TUpdate(value);
 				return RedirectToAction("Index");
 			}
-			return View();
+			catch (Exception ex)
+			{
+				_logger.LogError(ex.Message);
+				return View();
+			}
 
 		}
 	}
