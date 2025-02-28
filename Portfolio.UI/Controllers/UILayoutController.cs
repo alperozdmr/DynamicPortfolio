@@ -7,9 +7,11 @@ using Portfolio.Entity.concrete;
 using Portfolio.Service.Abstract;
 using Portfolio.Helper.Dtos;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Portfolio.UI.Controllers
 {
+    [AllowAnonymous]
     public class UILayoutController : Controller
     {
 		private readonly IContactService _contactService;

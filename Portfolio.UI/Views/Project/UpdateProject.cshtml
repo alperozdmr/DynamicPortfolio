@@ -9,7 +9,7 @@
 		<h4 class="page-title">Anasayfa Portfolio işlemleri</h4>
 		<div class="row">
 			<div class="col-md-12">
-				<form method="post">
+				<form method="post" enctype="multipart/form-data">
 					<div class="card">
 						<div class="card-header">
 							<div class="card-title">Yeni Proje Girişi</div>
@@ -24,8 +24,10 @@
 						</div>
 						<div class="card-body">
 							<div class="form-group">
-								<label for="ımageurl">Görselin URL ini Giriniz</label>
-								<input type="text" class="form-control" asp-for="Image" id="ımageurl">
+								@* <label for="ımageurl">Görselin URL ini Giriniz</label>
+								<input type="text" class="form-control" asp-for="Image" id="ımageurl"> *@
+								<label class="control-label">Resim</label>
+								<input asp-for="Image" type="file" name="ImageFile" class="form-control" />
 							</div>
 
 						</div>

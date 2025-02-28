@@ -31,8 +31,12 @@ namespace Portfolio.UI.Controllers
 			return View();
 		}
 		[HttpPost]
-		public async Task<IActionResult> CreateProject(ProjectDto var)
+		public async Task<IActionResult> CreateProject(ProjectDto var, IFormFile ImageFile)
 		{
+			var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/ımage", ImageFile.FileName);
+			await using FileStream stream = new FileStream(path, FileMode.Create);
+			await ImageFile.CopyToAsync(stream);
+			var.Image = "/ımage/" + ImageFile.FileName;
 			try
 			{
 				var value = _mapper.Map<Project>(var);
@@ -75,8 +79,12 @@ namespace Portfolio.UI.Controllers
 			}
 		}
 		[HttpPost]
-		public async Task<IActionResult> UpdateProject(ProjectDto var)
+		public async Task<IActionResult> UpdateProject(ProjectDto var, IFormFile ImageFile)
 		{
+			var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/ımage", ImageFile.FileName);
+			await using FileStream stream = new FileStream(path, FileMode.Create);
+			await ImageFile.CopyToAsync(stream);
+			var.Image = "/ımage/" + ImageFile.FileName;
 			try
 			{
 				var value = _mapper.Map<Project>(var);

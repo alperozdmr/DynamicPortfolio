@@ -32,8 +32,13 @@ namespace Portfolio.UI.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> CreateAbout(AboutDto var)
+		//[ValidateAntiForgeryToken]
+		public async Task<IActionResult> CreateAbout(AboutDto var, IFormFile ImageFile)
         {
+            var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/ımage", ImageFile.FileName);
+            await using FileStream stream = new FileStream(path, FileMode.Create);
+            await ImageFile.CopyToAsync(stream);
+			var.Image = "/ımage/"+ ImageFile.FileName;
             try {
 				var value = _mapper.Map<About>(var);
 				_aboutService.TAdd(value);
@@ -75,8 +80,12 @@ namespace Portfolio.UI.Controllers
 			}
 		}
         [HttpPost]
-        public async Task<IActionResult> UpdateAbout(AboutDto var)
+        public async Task<IActionResult> UpdateAbout(AboutDto var, IFormFile ImageFile)
         {
+			var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/ımage", ImageFile.FileName);
+			await using FileStream stream = new FileStream(path, FileMode.Create);
+			await ImageFile.CopyToAsync(stream);
+			var.Image = "/ımage/" + ImageFile.FileName;
 			try
 			{
 				var value = _mapper.Map<About>(var);

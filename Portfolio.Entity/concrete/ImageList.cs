@@ -10,7 +10,6 @@ namespace Portfolio.Entity.concrete
 	{
         public int ID { get; set; }
         public string ImageUrl { get; set; }
-        public int ProjectDetailID { get; set; }
-        public ProjectDetail ProjectDetail { get; set; }
+        public int ProjectId { get; set; }
     }
 }
