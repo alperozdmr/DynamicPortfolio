@@ -34,27 +34,6 @@ namespace Portfolio.UI.Controllers
             {
                 var value = _mapper.Map<Contact>(var);
                 _contactService.TAdd(value);
-
-                MimeMessage mimeMessage = new MimeMessage();
-
-                MailboxAddress mailboxAddressFrom = new MailboxAddress("Alper Özdemir", "alozdemir23@gmail.com");
-                mimeMessage.From.Add(mailboxAddressFrom);
-
-                MailboxAddress mailboxAddressTo = new MailboxAddress(var.NameSurname, var.Email);
-                mimeMessage.To.Add(mailboxAddressTo);
-
-                var bodyBuilder = new BodyBuilder();
-                bodyBuilder.TextBody = "Merhaba " + var.NameSurname + " fikriniz için teşekür ederim";
-                mimeMessage.Body = bodyBuilder.ToMessageBody();
-
-                mimeMessage.Subject = var.Subject;
-
-                SmtpClient clientM = new SmtpClient();
-                clientM.Connect("smtp.gmail.com", 587, false);
-                clientM.Authenticate("alozdemir23@gmail.com", "yyfy vmjh rsla hwgl");
-
-                clientM.Send(mimeMessage);
-                clientM.Disconnect(true);
                 return RedirectToAction("Index");
             }
             catch (Exception ex)

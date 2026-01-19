@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Portfolio.DataAccess.Abstract;
@@ -16,7 +17,8 @@ var requireAuthorizePolicy = new AuthorizationPolicyBuilder().RequireAuthenticat
 
 //builder.Services.AddDbContext<PortfolioContext>();
 builder.Services.AddHttpClient();
-builder.Services.AddScoped<PortfolioContext>();
+builder.Services.AddDbContext<PortfolioContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddIdentity<AppUser, AppRole>()
     .AddEntityFrameworkStores<PortfolioContext>();
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());

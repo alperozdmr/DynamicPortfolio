@@ -24,7 +24,12 @@ namespace Portfolio.Service.Concrete
             _contactDal.Add(entity);
         }
 
-        public void TDelete(Contact entity)
+		public void TChangeStausTrue(int id)
+		{
+            _contactDal.ChangeStausTrue(id);
+		}
+
+		public void TDelete(Contact entity)
         {
             _contactDal.Delete(entity);
         }

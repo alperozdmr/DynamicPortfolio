@@ -11,16 +11,18 @@ namespace Portfolio.UI.Controllers
 	public class ProjectController : Controller
 	{
 		private readonly IProjectService _projectService;
+		private readonly IImageListService _imageListService;
 		private readonly IMapper _mapper;
 		private readonly ILogger<ProjectController> _logger;
 
-		public ProjectController(IProjectService projectService, IMapper mapper, ILogger<ProjectController> logger)
-		{
-			_projectService = projectService;
-			_mapper = mapper;
-			_logger = logger;
-		}
-		public async Task<IActionResult> Index()
+        public ProjectController(IProjectService projectService, IMapper mapper, ILogger<ProjectController> logger, IImageListService imageListService)
+        {
+            _projectService = projectService;
+            _mapper = mapper;
+            _logger = logger;
+            _imageListService = imageListService;
+        }
+        public async Task<IActionResult> Index()
 		{
 			var values = _projectService.TGetListAll();
 			return View(_mapper.Map<List<ProjectDto>>(values));
@@ -37,8 +39,13 @@ namespace Portfolio.UI.Controllers
 			await using FileStream stream = new FileStream(path, FileMode.Create);
 			await ImageFile.CopyToAsync(stream);
 			var.Image = "/ımage/" + ImageFile.FileName;
+			ImageList ımage = new ImageList { 
+				ImageUrl= "/ımage/" + ImageFile.FileName,
+				ProjectId = var.ID
+            };
 			try
 			{
+				_imageListService.TAdd(ımage);
 				var value = _mapper.Map<Project>(var);
 				_projectService.TAdd(value);
 				return RedirectToAction("Index");

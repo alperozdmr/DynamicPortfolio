@@ -12,7 +12,7 @@ namespace Portfolio.DataAccess.Repository
 {
     public class GenericRepository<T> : IGenericDal<T> where T : class
     {
-        private readonly PortfolioContext _context;
+        protected readonly PortfolioContext _context;
 
         public GenericRepository(PortfolioContext context)
         {

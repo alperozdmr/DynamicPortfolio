@@ -27,7 +27,7 @@
 									<th scope="col">Mesaj</th>
 									<th scope="col">Email</th>
 									<th scope="col">Sil</th>
-									<th scope="col">Güncelle</th>
+									<th scope="col">Cevapla</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -41,6 +41,7 @@
 										<td>@item.Mesaage</td>
 										<td>@item.Email</td>
 										<td><a href="/Contact/DeleteContact/@item.ID" class="btn btn-outline-danger">Sil</a></td>
+										<td><a href="/Contact/ResponseMessage/@item.ID" class="btn btn-outline-primary">Cevapla</a></td>
 									</tr>
 								}
 

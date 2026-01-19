@@ -13,5 +13,6 @@ namespace Portfolio.Helper.Dtos
         public string Email { get; set; }
         public string Subject { get; set; }
         public string Mesaage { get; set; }
+        public bool Status { get; set; }
     }
 }

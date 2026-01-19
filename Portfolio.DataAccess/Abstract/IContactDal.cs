@@ -9,5 +9,6 @@ namespace Portfolio.DataAccess.Abstract
 {
     public interface IContactDal:IGenericDal<Contact>
     {
+        public void ChangeStausTrue(int id);
     }
 }

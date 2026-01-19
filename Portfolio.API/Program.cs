@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Portfolio.DataAccess.Abstract;
 using Portfolio.DataAccess.Concrete;
 using Portfolio.DataAccess.Context;

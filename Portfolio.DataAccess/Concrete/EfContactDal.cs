@@ -16,5 +16,12 @@ namespace Portfolio.DataAccess.Concrete
         public EfContactDal(PortfolioContext context) : base(context)
         {
         }
-    }
+
+		public void ChangeStausTrue(int id)
+		{
+			var value = _context.Contacts.Find(id);
+			value.Status = true;
+			_context.SaveChanges();
+		}
+	}
 }
