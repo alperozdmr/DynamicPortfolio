@@ -15,6 +15,18 @@ services:
       - ./db_backup:/var/opt/mssql/backup
       - ./restore-db.sql:/var/opt/mssql/backup/restore-db.sql
 
+  db-init:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: portfolio_db_init
+    user: root
+    depends_on:
+      - db
+    volumes:
+      - ./db_backup:/var/opt/mssql/backup
+      - ./restore-db.sql:/var/opt/mssql/backup/restore-db.sql
+      - ./wait-for-db.sh:/usr/local/bin/wait-for-db.sh
+    entrypoint: ["/bin/bash", "/usr/local/bin/wait-for-db.sh"]
+
   portfolio.ui:
     build:
       context: .
@@ -25,7 +37,8 @@ services:
     environment:
       - ConnectionStrings__DefaultConnection=Server=db;Database=PortfoliDb;User Id=sa;Password=Password123!;TrustServerCertificate=True;
     depends_on:
-      - db
+      db-init:
+        condition: service_completed_successfully
 
 volumes:
   sql_data:
