@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # wait-for-db.sh
 
 echo "Waiting for SQL Server to be available..."

@@ -25,7 +25,7 @@ services:
       - ./db_backup:/var/opt/mssql/backup
       - ./restore-db.sql:/var/opt/mssql/backup/restore-db.sql
       - ./wait-for-db.sh:/usr/local/bin/wait-for-db.sh
-    entrypoint: ["/bin/bash", "/usr/local/bin/wait-for-db.sh"]
+    entrypoint: ["/bin/sh", "/usr/local/bin/wait-for-db.sh"]
 
   portfolio.ui:
     build:
