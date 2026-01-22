@@ -22,6 +22,7 @@ services:
     depends_on:
       - db
     volumes:
+    - sql_data:/var/opt/mssql/data
       - ./db_backup:/var/opt/mssql/backup
       - ./restore-db.sql:/var/opt/mssql/backup/restore-db.sql
       - ./wait-for-db.sh:/usr/local/bin/wait-for-db.sh
@@ -42,3 +43,4 @@ services:
 
 volumes:
   sql_data:
+    name: sql_portfolio_data
