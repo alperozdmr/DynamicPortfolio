@@ -12,7 +12,7 @@ while [ $counter -lt 60 ]; do
         break
     else
         echo "Not ready yet..."
-        sleep 2
+        sleep 5
         counter=$((counter+1))
     fi
 done
