@@ -1,7 +1,8 @@
 #!/bin/sh
 # wait-for-db.sh
-
+sleep 15
 echo "Waiting for SQL Server to be available..."
+echo "RESTORE STARTED AT $(date)" >> /tmp/restore.log
 
 # Loop until we can connect to the database
 counter=0
