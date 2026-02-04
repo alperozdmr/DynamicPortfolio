@@ -15,18 +15,18 @@ services:
       - ./db_backup:/var/opt/mssql/backup
       - ./restore-db.sql:/var/opt/mssql/backup/restore-db.sql
 
-db-init:
-  image: mcr.microsoft.com/mssql/server:2022-latest
-  container_name: portfolio_db_init
-  user: root
-  depends_on:
-    - db
-  volumes:
-    - sql_data:/var/opt/mssql/data
-    - ./db_backup:/var/opt/mssql/backup
-    - ./restore-db.sql:/var/opt/mssql/backup/restore-db.sql
-    - ./wait-for-db.sh:/usr/local/bin/wait-for-db.sh
-  entrypoint: ["/bin/sh", "/usr/local/bin/wait-for-db.sh"]
+  db-init:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: portfolio_db_init
+    user: root
+    depends_on:
+      - db
+    volumes:
+      - sql_data:/var/opt/mssql/data
+      - ./db_backup:/var/opt/mssql/backup
+      - ./restore-db.sql:/var/opt/mssql/backup/restore-db.sql
+      - ./wait-for-db.sh:/usr/local/bin/wait-for-db.sh
+    entrypoint: ["/bin/sh", "/usr/local/bin/wait-for-db.sh"]
 
   portfolio.ui:
     build:
