@@ -17,8 +17,22 @@ var requireAuthorizePolicy = new AuthorizationPolicyBuilder().RequireAuthenticat
 
 //builder.Services.AddDbContext<PortfolioContext>();
 builder.Services.AddHttpClient();
+// builder.Services.AddDbContext<PortfolioContext>(options =>
+//     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddDbContext<PortfolioContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+{
+    var connStr = builder.Configuration.GetConnectionString("DefaultConnection");
+
+    options.UseSqlServer(connStr, sqlOptions =>
+    {
+        sqlOptions.EnableRetryOnFailure(
+            maxRetryCount: 10,
+            maxRetryDelay: TimeSpan.FromSeconds(5),
+            errorNumbersToAdd: null
+        );
+    });
+});
+
 builder.Services.AddIdentity<AppUser, AppRole>()
     .AddEntityFrameworkStores<PortfolioContext>();
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
@@ -55,6 +69,86 @@ builder.Services.ConfigureApplicationCookie(opts =>
     opts.LoginPath = "/Login/Index";
 });
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+
+    var db = services.GetRequiredService<PortfolioContext>();
+
+    // SQL container geç açılabiliyor -> retry
+    var retries = 20;
+    for (var i = 1; i <= retries; i++)
+    {
+        try
+        {
+            await db.Database.MigrateAsync();
+            break;
+        }
+        catch (Exception ex)
+        {
+            if (i == retries) throw;
+            Console.WriteLine($"[DB MIGRATE] Attempt {i}/{retries} failed: {ex.Message}");
+            await Task.Delay(TimeSpan.FromSeconds(3));
+        }
+    }
+
+    // Seed ayarları (koda password gömmek yok)
+    var seedEnabled = builder.Configuration.GetValue<bool>("Seed:Enabled");
+    if (seedEnabled)
+    {
+        var roleManager = services.GetRequiredService<RoleManager<AppRole>>();
+        var userManager = services.GetRequiredService<UserManager<AppUser>>();
+
+        var adminRole = builder.Configuration["Seed:AdminRole"] ?? "Admin";
+        var adminEmail = builder.Configuration["Seed:AdminEmail"];
+        var adminUserName = builder.Configuration["Seed:AdminUserName"] ?? adminEmail;
+        var adminPassword = builder.Configuration["Seed:AdminPassword"];
+
+        if (string.IsNullOrWhiteSpace(adminEmail) || string.IsNullOrWhiteSpace(adminPassword))
+        {
+            Console.WriteLine("[SEED] AdminEmail/AdminPassword boş. Seed atlandı.");
+        }
+        else
+        {
+            // 1) Rol yoksa oluştur
+            if (!await roleManager.RoleExistsAsync(adminRole))
+            {
+                var roleCreate = await roleManager.CreateAsync(new AppRole { Name = adminRole });
+                if (!roleCreate.Succeeded)
+                    throw new Exception("Admin role oluşturulamadı: " + string.Join(", ", roleCreate.Errors.Select(e => e.Description)));
+            }
+
+            // 2) Kullanıcı yoksa oluştur
+            var existingUser = await userManager.FindByEmailAsync(adminEmail);
+            if (existingUser == null)
+            {
+                var newUser = new AppUser
+                {
+                    UserName = adminUserName,
+                    Email = adminEmail,
+                    EmailConfirmed = true
+                };
+
+                var userCreate = await userManager.CreateAsync(newUser, adminPassword);
+                if (!userCreate.Succeeded)
+                    throw new Exception("Admin user oluşturulamadı: " + string.Join(", ", userCreate.Errors.Select(e => e.Description)));
+
+                existingUser = newUser;
+            }
+
+            // 3) Role ata (değilse)
+            if (!await userManager.IsInRoleAsync(existingUser, adminRole))
+            {
+                var addToRole = await userManager.AddToRoleAsync(existingUser, adminRole);
+                if (!addToRole.Succeeded)
+                    throw new Exception("Admin role ataması başarısız: " + string.Join(", ", addToRole.Errors.Select(e => e.Description)));
+            }
+
+            Console.WriteLine($"[SEED] Admin hazır: {adminEmail} (Role: {adminRole})");
+        }
+    }
+}
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {

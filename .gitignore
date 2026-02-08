@@ -366,3 +366,5 @@ FodyWeavers.xsd
 
 db_backup/
 *.md
+
+Portfolio.DataAccess/Migrations/*
