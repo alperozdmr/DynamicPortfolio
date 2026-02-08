@@ -24,4 +24,4 @@ if [ $counter -eq 60 ]; then
 fi
 
 echo "Running initialization script..."
-/opt/mssql-tools18/bin/sqlcmd -S db -U sa -P "Password123!" -C -i /var/opt/mssql/backup/restore-db.sql
+/opt/mssql-tools18/bin/sqlcmd -S db -U sa -P "Password123!" -C -i /tmp/restore-db.sql
