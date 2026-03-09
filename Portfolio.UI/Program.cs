@@ -1,5 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+// BUG FIX: Bu using eksikti. RoleManager<AppRole> ve UserManager<AppUser> tipleri bulunamıyordu,
+// build sırasında "The type or namespace 'RoleManager/UserManager' could not be found" hatası alınıyordu.
+// Çözüm: Microsoft.AspNetCore.Identity namespace'i eklendi.
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Portfolio.DataAccess.Abstract;
@@ -20,6 +23,10 @@ var requireAuthorizePolicy = new AuthorizationPolicyBuilder().RequireAuthenticat
 builder.Services.AddHttpClient();
 // builder.Services.AddDbContext<PortfolioContext>(options =>
 //     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+// BUG FIX: Önceki AddDbContext yapılandırmasında EnableRetryOnFailure yoktu.
+// Docker ortamında SQL Server container'ı geç başladığı için bağlantı denemeleri başarısız oluyordu.
+// Hata: "A network-related or instance-specific error occurred while establishing a connection to SQL Server"
+// Çözüm: EnableRetryOnFailure eklenerek SQL Server hazır olana kadar otomatik yeniden deneme sağlandı.
 builder.Services.AddDbContext<PortfolioContext>(options =>
 {
     var connStr = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -124,6 +131,11 @@ using (var scope = app.Services.CreateScope())
             var existingUser = await userManager.FindByEmailAsync(adminEmail);
             if (existingUser == null)
             {
+                // BUG FIX: Önceden Name ve Surname property'leri set edilmiyordu.
+                // AppUser tablosunda bu alanlar NOT NULL olarak tanımlı olduğu için
+                // CreateAsync çağrıldığında DbUpdateException fırlatılıyordu:
+                // "Cannot insert the value NULL into column 'Name', table 'PortfoliDb.dbo.AspNetUsers'"
+                // Çözüm: Name ve Surname alanları configuration'dan okunarak (veya varsayılan değerlerle) set edildi.
                 var newUser = new AppUser
                 {
                     UserName = adminUserName,
@@ -159,8 +171,19 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+// BUG FIX: UseHttpsRedirection() aktifken container içindeki uygulama tüm HTTP isteklerini
+// HTTPS'e yönlendiriyordu. Ancak container sadece HTTP port 80 üzerinde çalıştığı için
+// HTTPS portu bulunmuyordu ve tüm istekler başarısız oluyordu.
+// Jenkins health check (curl http://localhost:5000) bu yüzden sürekli fail ediyordu.
+// Çözüm: Docker ortamında HTTPS redirect devre dışı bırakıldı.
+//app.UseHttpsRedirection();
+// Development ortamında HTTPS redirect aktif (lokal SSL sertifikası var).
+// Production (Docker) ortamında container sadece HTTP:80 üzerinde çalıştığı için devre dışı.
+if (app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 
-//app.UseHttpsRedirection(); // Container HTTP:80 üzerinden çalışıyor, HTTPS redirect gereksiz
 app.UseStaticFiles();
 
 app.UseRouting();
