@@ -160,7 +160,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection(); // Container HTTP:80 üzerinden çalışıyor, HTTPS redirect gereksiz
 app.UseStaticFiles();
 
 app.UseRouting();

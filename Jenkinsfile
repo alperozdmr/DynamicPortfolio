@@ -39,7 +39,7 @@ pipeline {
 
                     for (int i = 1; i <= maxRetries; i++) {
                         try {
-                            sh "curl -f -s -o /dev/null http://localhost:5000"
+                            sh "curl -f -L -s -o /dev/null http://localhost:5000"
                             echo "Health check passed on attempt ${i}"
                             healthy = true
                             break
