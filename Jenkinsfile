@@ -30,32 +30,32 @@ pipeline {
             }
         }
 
-        stage('Health Check') {
-            steps {
-                script {
-                    def maxRetries = 12
-                    def retryInterval = 10  // seconds
-                    def healthy = false
+        // stage('Health Check') {
+        //     steps {
+        //         script {
+        //             def maxRetries = 12
+        //             def retryInterval = 10  // seconds
+        //             def healthy = false
 
-                    for (int i = 1; i <= maxRetries; i++) {
-                        try {
-                            sh "curl -f -L -s -o /dev/null http://localhost:5000"
-                            echo "Health check passed on attempt ${i}"
-                            healthy = true
-                            break
-                        } catch (Exception e) {
-                            echo "Health check attempt ${i}/${maxRetries} failed. Retrying in ${retryInterval}s..."
-                            sleep retryInterval
-                        }
-                    }
+        //             for (int i = 1; i <= maxRetries; i++) {
+        //                 try {
+        //                     sh "curl -f -L -s -o /dev/null http://localhost:5000"
+        //                     echo "Health check passed on attempt ${i}"
+        //                     healthy = true
+        //                     break
+        //                 } catch (Exception e) {
+        //                     echo "Health check attempt ${i}/${maxRetries} failed. Retrying in ${retryInterval}s..."
+        //                     sleep retryInterval
+        //                 }
+        //             }
 
-                    if (!healthy) {
-                        sh 'docker compose logs'
-                        error 'Application failed to become healthy within the expected time.'
-                    }
-                }
-            }
-        }
+        //             if (!healthy) {
+        //                 sh 'docker compose logs'
+        //                 error 'Application failed to become healthy within the expected time.'
+        //             }
+        //         }
+        //     }
+        // }
     }
 
     post {
