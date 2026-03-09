@@ -128,7 +128,9 @@ using (var scope = app.Services.CreateScope())
                 {
                     UserName = adminUserName,
                     Email = adminEmail,
-                    EmailConfirmed = true
+                    EmailConfirmed = true,
+                    Name = builder.Configuration["Seed:AdminName"] ?? "Admin",
+                    Surname = builder.Configuration["Seed:AdminSurname"] ?? "User"
                 };
 
                 var userCreate = await userManager.CreateAsync(newUser, adminPassword);

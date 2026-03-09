@@ -33,6 +33,8 @@ services:
       - Seed__AdminEmail=admin@yourdomain.com
       - Seed__AdminUserName=admin
       - Seed__AdminPassword=Password123!
+      - Seed__AdminName=Admin
+      - Seed__AdminSurname=User
     depends_on:
       db:
         condition: service_healthy
