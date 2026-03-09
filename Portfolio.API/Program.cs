@@ -19,7 +19,18 @@ builder.Services.AddCors(opt =>
     });
 });
 
-builder.Services.AddScoped<PortfolioContext>();
+builder.Services.AddDbContext<PortfolioContext>(options =>
+{
+    var connStr = builder.Configuration.GetConnectionString("DefaultConnection");
+    options.UseSqlServer(connStr, sqlOptions =>
+    {
+        sqlOptions.EnableRetryOnFailure(
+            maxRetryCount: 10,
+            maxRetryDelay: TimeSpan.FromSeconds(5),
+            errorNumbersToAdd: null
+        );
+    });
+});
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
 builder.Services.AddScoped<IAboutService, AboutManager>();

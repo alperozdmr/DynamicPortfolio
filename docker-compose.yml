@@ -2,7 +2,6 @@ services:
   db:
     image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: portfolio_db
-    user: root
     environment:
       - ACCEPT_EULA=Y
       - MSSQL_SA_PASSWORD=Password123!
@@ -21,10 +20,12 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    container_name: portfolio_ui
     image: portfolioui
     ports:
       - "5000:80"
     environment:
+      - ASPNETCORE_ENVIRONMENT=Production
       - ConnectionStrings__DefaultConnection=Server=db;Database=PortfoliDb;User Id=sa;Password=Password123!;TrustServerCertificate=True;
       - Seed__Enabled=true
       - Seed__AdminRole=Admin
@@ -34,6 +35,25 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    restart: on-failure
+
+  # portfolio.api:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.api
+  #   container_name: portfolio_api
+  #   image: portfolioapi
+  #   ports:
+  #     - "5001:80"
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Production
+  #     - ConnectionStrings__DefaultConnection=Server=db;Database=PortfoliDb;User Id=sa;Password=Password123!;TrustServerCertificate=True;
+  #   depends_on:
+  #     db:
+  #       condition: service_healthy
+  #     portfolio.ui:
+  #       condition: service_started
+  #   restart: on-failure
 
 volumes:
   sql_data:
