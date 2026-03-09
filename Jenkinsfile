@@ -14,19 +14,19 @@ pipeline {
 
         stage('Build Docker Images') {
             steps {
-                sh 'docker-compose build --no-cache'
+                sh 'docker compose build --no-cache'
             }
         }
 
         stage('Stop Previous Containers') {
             steps {
-                sh 'docker-compose down --remove-orphans || true'
+                sh 'docker compose down --remove-orphans || true'
             }
         }
 
         stage('Deploy') {
             steps {
-                sh 'docker-compose up -d'
+                sh 'docker compose up -d'
             }
         }
 
@@ -50,7 +50,7 @@ pipeline {
                     }
 
                     if (!healthy) {
-                        sh 'docker-compose logs'
+                        sh 'docker compose logs'
                         error 'Application failed to become healthy within the expected time.'
                     }
                 }
@@ -61,8 +61,8 @@ pipeline {
     post {
         failure {
             echo 'Pipeline failed. Collecting logs...'
-            sh 'docker-compose logs || true'
-            sh 'docker-compose down --remove-orphans || true'
+            sh 'docker compose logs || true'
+            sh 'docker compose down --remove-orphans || true'
         }
         success {
             echo 'Deployment successful!'
