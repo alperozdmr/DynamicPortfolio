@@ -365,6 +365,7 @@ FodyWeavers.xsd
 # Docker
 implementations/
 db_backup/
-*.md
 
-Portfolio.DataAccess/Migrations/*
+# Neon local proxy
+.env.development
+.neon_local/

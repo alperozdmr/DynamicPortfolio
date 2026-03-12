@@ -23,22 +23,33 @@ var requireAuthorizePolicy = new AuthorizationPolicyBuilder().RequireAuthenticat
 builder.Services.AddHttpClient();
 // builder.Services.AddDbContext<PortfolioContext>(options =>
 //     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-// BUG FIX: Önceki AddDbContext yapılandırmasında EnableRetryOnFailure yoktu.
-// Docker ortamında SQL Server container'ı geç başladığı için bağlantı denemeleri başarısız oluyordu.
-// Hata: "A network-related or instance-specific error occurred while establishing a connection to SQL Server"
-// Çözüm: EnableRetryOnFailure eklenerek SQL Server hazır olana kadar otomatik yeniden deneme sağlandı.
+// Development → SQL Server, Production → PostgreSQL (Neon)
 builder.Services.AddDbContext<PortfolioContext>(options =>
 {
     var connStr = builder.Configuration.GetConnectionString("DefaultConnection");
 
-    options.UseSqlServer(connStr, sqlOptions =>
+    if (builder.Environment.IsDevelopment())
     {
-        sqlOptions.EnableRetryOnFailure(
-            maxRetryCount: 10,
-            maxRetryDelay: TimeSpan.FromSeconds(5),
-            errorNumbersToAdd: null
-        );
-    });
+        options.UseSqlServer(connStr, sqlOptions =>
+        {
+            sqlOptions.EnableRetryOnFailure(
+                maxRetryCount: 10,
+                maxRetryDelay: TimeSpan.FromSeconds(5),
+                errorNumbersToAdd: null
+            );
+        });
+    }
+    else
+    {
+        options.UseNpgsql(connStr, npgsqlOptions =>
+        {
+            npgsqlOptions.EnableRetryOnFailure(
+                maxRetryCount: 10,
+                maxRetryDelay: TimeSpan.FromSeconds(5),
+                errorCodesToAdd: null
+            );
+        });
+    }
 });
 
 builder.Services.AddIdentity<AppUser, AppRole>()
@@ -84,13 +95,25 @@ using (var scope = app.Services.CreateScope())
 
     var db = services.GetRequiredService<PortfolioContext>();
 
-    // SQL container geç açılabiliyor -> retry
+    // Docker'da SQL Server geç açılabiliyor, retry mekanizması
     var retries = 20;
     for (var i = 1; i <= retries; i++)
     {
         try
         {
-            await db.Database.MigrateAsync();
+            if (builder.Environment.IsDevelopment())
+            {
+                // Development ortamı (SQL Server) için mevcut migration'ları uygular
+                await db.Database.MigrateAsync();
+            }
+            else
+            {
+                // Production ortamı (PostgreSQL - Neon)
+                // Mevcut SQL Server migration'larında Postgres ile uyumsuz Veri Tipleri ('nvarchar') olduğu için, 
+                // sıfırdan tablo oluşturmak adına EnsureCreatedAsync kullanıyoruz. 
+                // Bu sayede EF Core, model sınıflarımızdan Postgres'e uygun (text, integer vb.) tabloları otomatik yaratır.
+                await db.Database.EnsureCreatedAsync();
+            }
             break;
         }
         catch (Exception ex)

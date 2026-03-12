@@ -2,7 +2,7 @@ services:
   db:
     image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: portfolio_db
-    # BUG FIX: Bu satır olmadan SQL Server container'ı başlatılamıyordu.
+      # BUG FIX: Bu satır olmadan SQL Server container'ı başlatılamıyordu.
     # Docker volume'una yazma izni olmadığı için mssql kullanıcısı /var/opt/mssql/data dizinine
     # yazamıyordu ve container crash oluyordu.
     # Hata: "Error setting up the staging directories... Permission denied"
@@ -31,14 +31,14 @@ services:
     ports:
       - "5000:80"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Server=db;Database=PortfoliDb;User Id=sa;Password=Password123!;TrustServerCertificate=True;
       - Seed__Enabled=true
       - Seed__AdminRole=Admin
       - Seed__AdminEmail=admin@yourdomain.com
       - Seed__AdminUserName=admin
       - Seed__AdminPassword=Password123!
-      # BUG FIX: Bu iki değişken önceden yoktu. AppUser entity'sinde Name ve Surname
+            # BUG FIX: Bu iki değişken önceden yoktu. AppUser entity'sinde Name ve Surname
       # alanları NOT NULL olarak tanımlı olduğu için seed sırasında bu değerler
       # sağlanmadığında DbUpdateException fırlatılıyordu:
       # "Cannot insert the value NULL into column 'Name'"
@@ -49,24 +49,6 @@ services:
       db:
         condition: service_healthy
     restart: on-failure
-
-  # portfolio.api:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile.api
-  #   container_name: portfolio_api
-  #   image: portfolioapi
-  #   ports:
-  #     - "5001:80"
-  #   environment:
-  #     - ASPNETCORE_ENVIRONMENT=Production
-  #     - ConnectionStrings__DefaultConnection=Server=db;Database=PortfoliDb;User Id=sa;Password=Password123!;TrustServerCertificate=True;
-  #   depends_on:
-  #     db:
-  #       condition: service_healthy
-  #     portfolio.ui:
-  #       condition: service_started
-  #   restart: on-failure
 
 volumes:
   sql_data:

@@ -14,19 +14,19 @@ pipeline {
 
         stage('Build Docker Images') {
             steps {
-                sh 'docker compose build'
+                sh 'docker compose -f docker-compose.prod.yml build'
             }
         }
 
         stage('Stop Previous Containers') {
             steps {
-                sh 'docker compose down -v --remove-orphans || true'
+                sh 'docker compose -f docker-compose.prod.yml down -v --remove-orphans || true'
             }
         }
 
         stage('Deploy') {
             steps {
-                sh 'docker compose up -d'
+                sh 'docker compose -f docker-compose.prod.yml up -d'
             }
         }
 
@@ -39,7 +39,7 @@ pipeline {
 
         //             for (int i = 1; i <= maxRetries; i++) {
         //                 try {
-        //                     sh "curl -f -L -s -o /dev/null http://localhost:5000"
+        //                     sh "curl -f -L -s -o /prod/null http://localhost:5000"
         //                     echo "Health check passed on attempt ${i}"
         //                     healthy = true
         //                     break
@@ -50,7 +50,7 @@ pipeline {
         //             }
 
         //             if (!healthy) {
-        //                 sh 'docker compose logs'
+        //                 sh 'docker compose -f docker-compose.prod.yml logs'
         //                 error 'Application failed to become healthy within the expected time.'
         //             }
         //         }
@@ -61,8 +61,8 @@ pipeline {
     post {
         failure {
             echo 'Pipeline failed. Collecting logs...'
-            sh 'docker compose logs || true'
-            sh 'docker compose down -v --remove-orphans || true'
+            sh 'docker compose -f docker-compose.prod.yml logs || true'
+            sh 'docker compose -f docker-compose.prod.yml down -v --remove-orphans || true'
         }
         success {
             echo 'Deployment successful!'
