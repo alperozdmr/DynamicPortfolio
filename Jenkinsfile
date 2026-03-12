@@ -14,13 +14,13 @@ pipeline {
 
         stage('Build Docker Images') {
             steps {
-                sh 'docker compose build --no-cache'
+                sh 'docker compose build'
             }
         }
 
         stage('Stop Previous Containers') {
             steps {
-                sh 'docker compose down --remove-orphans || true'
+                sh 'docker compose down -v --remove-orphans || true'
             }
         }
 
@@ -62,7 +62,7 @@ pipeline {
         failure {
             echo 'Pipeline failed. Collecting logs...'
             sh 'docker compose logs || true'
-            sh 'docker compose down --remove-orphans || true'
+            sh 'docker compose down -v --remove-orphans || true'
         }
         success {
             echo 'Deployment successful!'
