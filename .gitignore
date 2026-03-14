@@ -366,6 +366,8 @@ FodyWeavers.xsd
 implementations/
 db_backup/
 
-# Neon local proxy
+# Neon local proxy and Environment Variables
 .env.development
-.neon_local/
+.env.production
+.neon_local/
+docker-compose.dev.yml

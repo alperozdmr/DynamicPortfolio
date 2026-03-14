@@ -5,7 +5,7 @@ services:
     image: neondatabase/neon_local:latest
     container_name: neon-local-proxy
     env_file:
-      - .env.development
+      - .env.production
     ports:
       - "5432:5432"
     volumes:
@@ -33,14 +33,14 @@ services:
       # NOT: Npgsql (PostgreSQL provider'ı) 'Channel Binding=Require;' parametresini desteklemediği için 
       # connection string'den çıkarılmıştır.
       # Neon-local proxy proxy'sine bağlanırken Neon'un kendi proxy credential'ları (neon:npg) kullanılır.
-      - ConnectionStrings__DefaultConnection=Host=ep-ancient-forest-alhg7a37-pooler.c-3.eu-central-1.aws.neon.tech;Database=neondb;Username=neondb_owner;Password=npg_g5SRrM6fthzK;SSL Mode=VerifyFull;
-      - Seed__Enabled=true
-      - Seed__AdminRole=Admin
-      - Seed__AdminEmail=admin@yourdomain.com
-      - Seed__AdminUserName=admin
-      - Seed__AdminPassword=Password123!
-      - Seed__AdminName=Admin
-      - Seed__AdminSurname=User
+      - ConnectionStrings__DefaultConnection=${DB_CONNECTION_STRING}
+      - Seed__Enabled=${SEED_ENABLED}
+      - Seed__AdminRole=${SEED_ADMIN_ROLE}
+      - Seed__AdminEmail=${SEED_ADMIN_EMAIL}
+      - Seed__AdminUserName=${SEED_ADMIN_USERNAME}
+      - Seed__AdminPassword=${SEED_ADMIN_PASSWORD}
+      - Seed__AdminName=${SEED_ADMIN_NAME}
+      - Seed__AdminSurname=${SEED_ADMIN_SURNAME}
     volumes:
       - portfolio_images:/app/wwwroot/ımage
     depends_on:
