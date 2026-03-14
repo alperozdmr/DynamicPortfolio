@@ -14,10 +14,9 @@ pipeline {
 
         stage('Build Docker Images') {
             steps {
-                // Jenkins Credentials Manager uzerinden PROD_ENV_FILE adinda bir 'Secret text' tanimlanmalidir.
-                // İcine .env.production dosyasindaki butun metin kopyalanip yapistirilmalidir.
-                withCredentials([string(credentialsId: 'PROD_ENV_FILE', variable: 'SECURE_ENV_CONTENT')]) {
-                    sh 'echo "$SECURE_ENV_CONTENT" > .env.production'
+                // Jenkins Credentials Manager uzerinden PROD_ENV_FILE adinda bir 'Secret file' eklendi.
+                withCredentials([file(credentialsId: 'PROD_ENV_FILE', variable: 'SECURE_ENV_FILE')]) {
+                    sh 'cp $SECURE_ENV_FILE .env.production'
                 }
                 sh 'docker compose --env-file .env.production -f docker-compose.prod.yml build'
             }
