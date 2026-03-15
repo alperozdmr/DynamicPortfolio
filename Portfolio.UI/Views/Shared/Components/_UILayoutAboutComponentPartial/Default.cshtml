@@ -1,43 +1,54 @@
-﻿@model List<Portfolio.Helper.Dtos.AboutDto>
+@model List<Portfolio.Helper.Dtos.AboutDto>
 
-<section id="about" class="about section">
+<section id="about" class="max-w-7xl w-full mx-auto px-6 py-12 md:py-20 space-y-24">
     @foreach (var item in Model)
     {
-        <!-- Section Title -->
-        <div class="container section-title" data-aos="fade-up">
-            <h2>About</h2>
-            
-        </div><!-- End Section Title -->
-
-        <div class="container" data-aos="fade-up" data-aos-delay="100">
-
-            <div class="row gy-4 justify-content-center">
-                <div class="col-lg-4">
-                    <img src="@item.Image" class="img-fluid" alt="">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
+            <div class="md:col-span-4 flex flex-col items-center md:items-start">
+                <div class="relative group">
+                    <div class="absolute -inset-1 bg-gradient-to-r from-primary to-blue-400 rounded-full blur opacity-25 group-hover:opacity-40 transition-opacity"></div>
+                    <div class="relative w-48 h-48 md:w-64 md:h-64 rounded-full border-4 border-slate-200 dark:border-slate-800 bg-cover bg-center overflow-hidden" 
+                         style='background-image: url("@item.Image");'>
+                    </div>
                 </div>
-                <div class="col-lg-8 content">
-                    <h2>@item.Title.</h2>
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <ul>
-                                <li><i class="bi bi-chevron-right"></i> <strong>Website:</strong> <span>@item.Website</span></li>
-                                <li><i class="bi bi-chevron-right"></i> <strong>Phone:</strong> <span>@item.Phone</span></li>
-                                <li><i class="bi bi-chevron-right"></i> <strong>City:</strong> <span>@item.City</span></li>
-                            </ul>
+            </div>
+            <div class="md:col-span-8 text-center md:text-left">
+                <h1 class="text-3xl md:text-4xl font-bold mb-4 text-slate-900 dark:text-white">About <span class="text-primary">Me</span></h1>
+                <h2 class="text-xl md:text-2xl font-medium text-slate-600 dark:text-slate-400 mb-6">@item.Title</h2>
+                <p class="text-lg leading-relaxed text-slate-700 dark:text-slate-300 mb-8">
+                    @item.Description
+                </p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-3 text-sm bg-slate-100 dark:bg-slate-800 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700">
+                            <span class="material-symbols-outlined text-primary text-xl">language</span>
+                            <span class="font-medium text-slate-700 dark:text-slate-300"><strong>Website:</strong> @item.Website</span>
                         </div>
-                        <div class="col-lg-6">
-                            <ul>
-                                <li><i class="bi bi-chevron-right"></i> <strong>Age:</strong> <span>@item.Age</span></li>
-                                <li><i class="bi bi-chevron-right"></i> <strong>Degree:</strong> <span>@item.Degree</span></li>
-                                <li><i class="bi bi-chevron-right"></i> <strong>Email:</strong> <span>@item.Email</span></li>
-                            </ul>
+                        <div class="flex items-center gap-3 text-sm bg-slate-100 dark:bg-slate-800 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700">
+                            <span class="material-symbols-outlined text-primary text-xl">call</span>
+                            <span class="font-medium text-slate-700 dark:text-slate-300"><strong>Phone:</strong> @item.Phone</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-sm bg-slate-100 dark:bg-slate-800 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700">
+                            <span class="material-symbols-outlined text-primary text-xl">location_on</span>
+                            <span class="font-medium text-slate-700 dark:text-slate-300"><strong>City:</strong> @item.City</span>
                         </div>
                     </div>
-                    <p>@item.Description</p>
-
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-3 text-sm bg-slate-100 dark:bg-slate-800 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700">
+                            <span class="material-symbols-outlined text-primary text-xl">cake</span>
+                            <span class="font-medium text-slate-700 dark:text-slate-300"><strong>Age:</strong> @item.Age</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-sm bg-slate-100 dark:bg-slate-800 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700">
+                            <span class="material-symbols-outlined text-primary text-xl">school</span>
+                            <span class="font-medium text-slate-700 dark:text-slate-300"><strong>Degree:</strong> @item.Degree</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-sm bg-slate-100 dark:bg-slate-800 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700">
+                            <span class="material-symbols-outlined text-primary text-xl">mail</span>
+                            <span class="font-medium text-slate-700 dark:text-slate-300"><strong>Email:</strong> @item.Email</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     }
-
 </section>

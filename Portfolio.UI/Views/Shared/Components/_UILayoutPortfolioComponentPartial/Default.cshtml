@@ -1,40 +1,35 @@
-﻿@model List<Portfolio.Helper.Dtos.ProjectDto>
+@model List<Portfolio.Helper.Dtos.ProjectDto>
 
-<section id="portfolio" class="portfolio section light-background">
-
-    <!-- Section Title -->
-    <div class="container section-title" data-aos="fade-up">
-        <h2>Portfolio</h2>
-    </div><!-- End Section Title -->
-
-    <div class="container">
-
-        <div class="isotope-layout" data-default-filter="*" data-layout="masonry" data-sort="original-order">
-
-            <ul class="portfolio-filters isotope-filters" data-aos="fade-up" data-aos-delay="100">
-                <li data-filter="*" class="filter-active">All</li>
-            </ul><!-- End Portfolio Filters -->
-
-            <div class="row gy-4 isotope-container" data-aos="fade-up" data-aos-delay="200">
-
-                @foreach (var item in Model)
-                {
-                    <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-app">
-                        <div class="portfolio-content h-100">
-                            <img src="@item.Image" width="400" height="300" class="img-fluid" alt="">
-                            <div class="portfolio-info">
-                                <h4>@item.Header</h4>
-                                <p>@item.Description</p>
-                                <a href="@item.Image" title="@item.Header" data-gallery="portfolio-gallery-app" class="glightbox preview-link"><i class="bi bi-zoom-in"></i></a>
-                                <a href="/UIProjectReview/Index/@item.ID" title="More Details" class="details-link"><i class="bi bi-link-45deg"></i></a>
-                            </div>
-                        </div>
-                    </div><!-- End Portfolio Item -->
-                }
-            </div><!-- End Portfolio Container -->
-
-        </div>
-
+<section id="portfolio" class="flex flex-col max-w-7xl w-full mx-auto px-6 py-12 md:py-20 border-t border-slate-200 dark:border-slate-800 pt-16 mt-12">
+    <div class="flex flex-col gap-4 mb-12">
+        <h2 class="text-slate-900 dark:text-white text-4xl md:text-5xl font-black leading-tight tracking-tight">Portfolio</h2>
+        <p class="text-slate-500 dark:text-slate-400 text-lg max-w-2xl leading-relaxed">
+            A curated selection of my latest projects.
+        </p>
     </div>
-
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+        @foreach (var item in Model)
+        {
+            <div class="group flex flex-col gap-5 bg-white dark:bg-slate-800/50 rounded-2xl p-4 border border-slate-200 dark:border-slate-700 hover:border-primary/50 transition-colors">
+                <div class="relative w-full aspect-[16/10] bg-slate-200 dark:bg-slate-800 rounded-xl overflow-hidden shadow-sm transition-all group-hover:shadow-xl group-hover:-translate-y-1">
+                    <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('@item.Image')"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
+                        <a href="/UIProjectReview/Index/@item.ID" class="text-white font-medium flex items-center gap-2">View Details <span class="material-symbols-outlined text-sm">arrow_forward</span></a>
+                    </div>
+                </div>
+                <div class="flex flex-col gap-2 pt-2 px-2">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-slate-900 dark:text-white text-xl font-bold group-hover:text-primary transition-colors">@item.Header</h3>
+                    </div>
+                    <p class="text-slate-500 dark:text-slate-400 text-base leading-relaxed line-clamp-2">
+                        @item.Description
+                    </p>
+                    <a class="mt-4 inline-flex items-center text-primary font-bold text-sm gap-1 hover:gap-2 transition-all" href="/UIProjectReview/Index/@item.ID">
+                        View Project <span class="material-symbols-outlined text-lg">chevron_right</span>
+                    </a>
+                </div>
+            </div>
+        }
+    </div>
 </section>

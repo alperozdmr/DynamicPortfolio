@@ -1,101 +1,123 @@
-﻿@model Portfolio.UI.CustomeModel.UIProjectReview
+@model Portfolio.UI.CustomeModel.UIProjectReview
 @{
     Layout = null;
 }
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr" class="dark">
 
 @await Component.InvokeAsync("_UILayoutHeadComponentPartial")
 
-<body class="portfolio-details-page">
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased">
+    <div class="relative flex h-auto min-h-screen w-full flex-col bg-background-light dark:bg-background-dark overflow-x-hidden">
+        
+        <!-- Navigation -->
+        @await Component.InvokeAsync("_UILayoutHeaderComponentPartial")
 
-    @await Component.InvokeAsync("_UILayoutHeaderComponentPartial")
-
-    <main class="main">
-
-        <!-- Page Title -->
-        <div class="page-title dark-background">
-            <div class="container d-lg-flex justify-content-between align-items-center">
-                <h1 class="mb-2 mb-lg-0">Portfolio Details</h1>
-                <nav class="breadcrumbs">
-                    <ol>
-                        <li><a href="index.html">Home</a></li>
-                        <li class="current">Portfolio Details</li>
-                    </ol>
-                </nav>
-            </div>
-        </div><!-- End Page Title -->
-        <!-- Portfolio Details Section -->
-        <section id="portfolio-details" class="portfolio-details section">
-
-            <div class="container" data-aos="fade-up" data-aos-delay="100">
-
-                <div class="row gy-4">
-
-                    <div class="col-lg-8">
-                        <div class="portfolio-details-slider swiper init-swiper">
-
-                            <script type="application/json" class="swiper-config">
-                                {
-                                  "loop": true,
-                                  "speed": 600,
-                                  "autoplay": {
-                                    "delay": 5000
-                                  },
-                                  "slidesPerView": "auto",
-                                  "pagination": {
-                                    "el": ".swiper-pagination",
-                                    "type": "bullets",
-                                    "clickable": true
-                                  }
-                                }
-                            </script>
-
-                            <div class="swiper-wrapper align-items-center">
-
-                                @foreach (var item in Model.ImageLists)
-                                {
-                                    <div class="swiper-slide">
-                                        <img src="@item.ImageUrl" alt="">
-                                    </div>
-                                }
-
-
-                            </div>
-                            <div class="swiper-pagination"></div>
-                        </div>
+        <main class="flex-1 flex flex-col items-center">
+            <div class="w-full max-w-6xl px-4 md:px-10 py-8">
+                <!-- Hero Section -->
+                <div class="relative w-full rounded-xl overflow-hidden mb-12 aspect-[21/9]">
+                    <div class="absolute inset-0 bg-gradient-to-t from-background-dark via-background-dark/20 to-transparent z-10"></div>
+                    <div class="absolute inset-0 w-full h-full bg-slate-800" data-alt="Project cover image">
+                        <img alt="Hero Project Image" class="w-full h-full object-cover" src="@(Model.ImageLists?.FirstOrDefault()?.ImageUrl ?? "")" />
                     </div>
-
-                    <div class="col-lg-4">
-                        <div class="portfolio-info" data-aos="fade-up" data-aos-delay="200">
-                            <h3>Project information</h3>
-                            <ul>
-                                <li><strong>Category</strong>:@Model.Category</li>
-                                <li><strong>Client</strong>: @Model.Client</li>
-                                <li><strong>Project URL</strong>: <a href="@Model.ProjectUrl">@Model.ProjectUrl</a></li>
-                            </ul>
+                    <div class="absolute bottom-0 left-0 p-8 md:p-12 z-20">
+                        <div class="flex gap-2 mb-4">
+                            <span class="px-3 py-1 bg-primary text-white text-xs font-bold rounded-full uppercase tracking-wider">@Model.Category</span>
                         </div>
-                        <div class="portfolio-description" data-aos="fade-up" data-aos-delay="300">
-                            <h2>@Model.Header</h2>
-                            <p>
-                                @Model.Description
-                            </p>
-                        </div>
+                        <h1 class="text-4xl md:text-6xl font-black text-white leading-tight">@Model.Header</h1>
                     </div>
-
                 </div>
 
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+                    <!-- Main Content -->
+                    <div class="lg:col-span-2 space-y-10">
+                        <section>
+                            <h2 class="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-3 mb-4">
+                                <span class="material-symbols-outlined text-primary">description</span>
+                                Proje Özeti
+                            </h2>
+                            <div class="prose dark:prose-invert max-w-none text-slate-600 dark:text-slate-400 leading-relaxed text-lg">
+                                @Model.Description
+                            </div>
+                        </section>
+
+                        <!-- Image Gallery -->
+                        @if (Model.ImageLists != null && Model.ImageLists.Count() > 1)
+                        {
+                            <section class="pt-6">
+                                <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-6">Proje Galerisi</h2>
+                                <div class="grid grid-cols-2 gap-4">
+                                    @{
+                                        var galleryImages = Model.ImageLists.Skip(1).ToList();
+                                        for (int i = 0; i < galleryImages.Count; i++)
+                                        {
+                                            var cssClass = (i == 2 && galleryImages.Count > 2) ? "rounded-lg overflow-hidden h-64 col-span-2 bg-slate-800" : "rounded-lg overflow-hidden h-64 bg-slate-800";
+                                            <div class="@cssClass">
+                                                <img alt="Gallery Image @i" class="w-full h-full object-cover" src="@galleryImages[i].ImageUrl" />
+                                            </div>
+                                        }
+                                    }
+                                </div>
+                            </section>
+                        }
+                    </div>
+
+                    <!-- Sidebar -->
+                    <div class="space-y-8">
+                       
+                        <div class="p-6 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-6">Kullanılan Teknolojiler</h3>
+                            <div class="grid grid-cols-2 gap-4">
+                                @if(!string.IsNullOrEmpty(Model.Category))
+                                {
+                                    var categories = Model.Category.Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                                    foreach(var tech in categories)
+                                    {
+                                        string iconStr = "code";
+                                        if (tech.Contains("C#", StringComparison.OrdinalIgnoreCase) || tech.Contains(".NET", StringComparison.OrdinalIgnoreCase)) iconStr = "terminal";
+                                        else if (tech.Contains("C++", StringComparison.OrdinalIgnoreCase)) iconStr = "data_object";
+                                        else if (tech.Contains("Java", StringComparison.OrdinalIgnoreCase)) iconStr = "coffee";
+                                        else if (tech.Contains("Game", StringComparison.OrdinalIgnoreCase) || tech.Contains("Oyun", StringComparison.OrdinalIgnoreCase)) iconStr = "sports_esports";
+                                        else if (tech.Contains("Web", StringComparison.OrdinalIgnoreCase) || tech.Contains("Html", StringComparison.OrdinalIgnoreCase) || tech.Contains("Css", StringComparison.OrdinalIgnoreCase)) iconStr = "language";
+                                        else if (tech.Contains("Sql", StringComparison.OrdinalIgnoreCase) || tech.Contains("Db", StringComparison.OrdinalIgnoreCase)) iconStr = "database";
+                                        else if (tech.Contains("React", StringComparison.OrdinalIgnoreCase) || tech.Contains("Vue", StringComparison.OrdinalIgnoreCase) || tech.Contains("Angular", StringComparison.OrdinalIgnoreCase)) iconStr = "javascript";
+                                        else if (tech.Contains("Design", StringComparison.OrdinalIgnoreCase) || tech.Contains("UI", StringComparison.OrdinalIgnoreCase) || tech.Contains("UX", StringComparison.OrdinalIgnoreCase)) iconStr = "palette";
+
+                                        <div class="flex flex-col items-center p-3 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                                            <span class="material-symbols-outlined text-primary text-3xl mb-2">@iconStr</span>
+                                            <span class="text-xs font-semibold">@tech.Trim()</span>
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+                                    <div class="flex flex-col items-center p-3 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 col-span-2">
+                                        <span class="text-xs font-semibold text-slate-500">Teknoloji belirtilmedi</span>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        @if (!string.IsNullOrEmpty(Model.ProjectUrl))
+                        {
+                            <a href="@Model.ProjectUrl" target="_blank" class="w-full py-4 bg-primary text-white font-bold rounded-lg hover:bg-primary/90 transition-all flex items-center justify-center gap-2">
+                                <span>Projeyi Canlı İzle</span>
+                                <span class="material-symbols-outlined text-sm">open_in_new</span>
+                            </a>
+                        }
+                    </div>
+                </div>
             </div>
+        </main>
 
-        </section><!-- /Portfolio Details Section -->
+        <!-- Footer -->
+        @await Component.InvokeAsync("_UILayoutFooterComponentPartial")
 
-    </main>
+        @await Component.InvokeAsync("_UILayoutScriptComponentPartial")
 
-    @await Component.InvokeAsync("_UILayoutFooterComponentPartial")
-
-    @await Component.InvokeAsync("_UILayoutScriptComponentPartial")
-
+    </div>
 </body>
 
 </html>
